@@ -1,0 +1,40 @@
+# Python virtual environments
+venv/
+env/
+.env
+
+# Python cache and build files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+dist/
+*.egg-info/
+
+# CRITICAL: Do not commit large datasets to GitHub (GitHub has a 100MB file limit)
+# The phase3_get_data.py script allows anyone to regenerate this.
+data/
+*.parquet
+*.csv
+*.json
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+
+# Local Spark/Ivy caches (if any end up in project dir)
+.ivy2/
+
+# Logs
+*.log

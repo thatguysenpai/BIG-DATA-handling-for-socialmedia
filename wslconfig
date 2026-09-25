@@ -1,0 +1,15 @@
+# WSL2 global config — place this at C:\Users\<YourWindowsUsername>\.wslconfig
+# (NOT inside WSL — this file lives on the Windows side)
+#
+# Why: on a 12GB machine, Docker Desktop's WSL2 VM can otherwise claim up to
+# ~90% of RAM by default, leaving Windows itself sluggish or unresponsive
+# while Spark/Kafka/Mongo are running. This caps it explicitly.
+#
+# After creating/editing this file, restart WSL2 from PowerShell:
+#   wsl --shutdown
+# then reopen your WSL terminal and re-run `docker compose up -d`.
+
+[wsl2]
+memory=7GB
+processors=4
+swap=2GB
