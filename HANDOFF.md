@@ -118,3 +118,7 @@ Data Sources (HuggingFace datasets)
 - [ ] Run `phase3_get_data.py`, record actual GB achieved — may need to raise/lower `TWEET_TARGET_BYTES`/`REDDIT_TARGET_BYTES` to land at 3GB combined
 - [ ] Decide the VADER-vs-existing-labels question above
 - [ ] Verify Docker/WSL2 setup actually works end-to-end on the real machine (SETUP.md steps have not been confirmed run yet — this handoff describes what was *planned*, not what was *tested*)
+
+
+
+# this file hasnt been updated, it was the first initialization of this project, check PROGRESS_LOG.md
