@@ -478,7 +478,7 @@ Findings, with the evidence for each:
       (the dashboard reads MongoDB first).
 - [ ] The per-subreddit chart needs the `subreddit` column; the existing chunks do not have it. Either accept and omit it, or re-run
       `acquire_data.py` and the pipeline.
-- [ ] Move `phase5_kafka_to_mongo.py` and `phase6_mongodb_to_spark.py` into `poc/` under the new names (`apply_cleanup.sh` does this).
+- [x] (done) Move `phase5_kafka_to_mongo.py` and `phase6_mongodb_to_spark.py` into `poc/` under the new names (`apply_cleanup.sh` does this).
 - [ ] Fill in the member names and dashboard screenshots in the report, update the table of contents field, check the page count (15-20).
 - [ ] Add the dataset download link to `README.md`.
 

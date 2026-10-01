@@ -35,3 +35,4 @@ repomix-output.xml
 .pytest_cache/
 .mypy_cache/
 *.swp
+results/keyword_monthly.csv
