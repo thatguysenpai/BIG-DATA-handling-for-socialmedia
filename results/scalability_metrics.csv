@@ -1,0 +1,4 @@
+dataset_fraction,rows_in,rows_after_cleaning,mongo_count_query_seconds,load_clean_score_seconds,aggregate_seconds,total_seconds,rows_per_second
+0.25,1537287,1208276,1.425,131.3,26.1,158.83,9679.1
+0.5,3073348,2381956,3.208,241.57,51.98,296.76,10356.2
+1.0,6144625,4689671,13.066,566.25,92.32,671.64,9148.6

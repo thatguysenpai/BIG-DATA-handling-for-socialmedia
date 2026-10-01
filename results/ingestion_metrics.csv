@@ -1,0 +1,4 @@
+dataset_fraction,slice_rows,slice_seconds,slice_rows_per_sec,cumulative_rows,cumulative_seconds,cumulative_rows_per_sec
+0.25,1537287,32.83,46829.7,1537287,32.83,46829.7
+0.5,1536061,33.38,46012.0,3073348,66.21,46417.4
+1.0,3071277,49.03,62637.5,6144625,115.24,53318.5

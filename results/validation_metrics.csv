@@ -1,0 +1,14 @@
+metric,value
+accuracy,0.27785653123348397
+precision_positive,0.0
+recall_positive,0.0
+f1_positive,0.0
+precision_neutral,1.0
+recall_neutral,0.27785653123348397
+f1_neutral,0.43487907201174736
+precision_negative,0.0
+recall_negative,0.0
+f1_negative,0.0
+macro_f1,0.14495969067058245
+n_labelled_posts,488162.0
+classes_present_in_reference_labels,1.0

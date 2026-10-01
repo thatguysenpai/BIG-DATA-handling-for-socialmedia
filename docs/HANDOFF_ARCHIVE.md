@@ -1,3 +1,7 @@
+> **ARCHIVED planning notes.** Written at the start of the project (dataset still unacquired) and kept only as a record of
+> the dataset-decision reasoning. Several details are out of date: Spark memory, the 1.5 GB / 3 GB size targets, file names
+> and the project location. The current state is in `README.md`, `SETUP.md` and `PROGRESS_LOG.md`.
+
 # HANDOFF — COEN542 Big Data Analytics Project
 
 Last updated: Phase 3 (dataset acquisition script written, not yet run)
@@ -121,4 +125,3 @@ Data Sources (HuggingFace datasets)
 
 
 
-# this file hasnt been updated, it was the first initialization of this project, check PROGRESS_LOG.md

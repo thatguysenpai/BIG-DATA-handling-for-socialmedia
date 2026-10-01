@@ -1,5 +1,9 @@
-"""
-Phase 3 — Dataset acquisition and sizing (ULTRA-SAFE CHUNKED VERSION)
+"""Dataset acquisition: streams English tweets (DLT-Tweets) and Reddit comments (5 subreddits)
+from HuggingFace and writes 50,000-row Parquet chunks to data/raw/ (config.RAW_DIR).
+
+    python acquire_data.py
+
+Chunked writing keeps memory low on a 12 GB machine. Re-running deletes old chunks first.
 """
 import os
 import gc
@@ -7,9 +11,10 @@ import pandas as pd
 from pathlib import Path
 from datasets import load_dataset
 
-OUTPUT_DIR = "data/raw"
-# Lowered slightly to 1.2GB each (2.4GB total) to be extremely safe on 12GB RAM
-# while still comfortably exceeding the 1GB minimum requirement.
+import config
+
+OUTPUT_DIR = config.RAW_DIR
+
 TWEET_TARGET_BYTES = 1_200_000_000   
 REDDIT_TARGET_BYTES = 1_200_000_000  
 REDDIT_SUBREDDITS = ["askscience", "gaming", "technology", "todayilearned", "programming"]
@@ -82,6 +87,7 @@ def pull_reddit():
             continue
 
         for row in ds:
+            row.setdefault("subreddit", subreddit)   # keep the community name so per-subreddit sentiment works
             all_rows.append(row)
             running_bytes += estimate_row_bytes(row)
             total_rows += 1
@@ -129,4 +135,4 @@ if __name__ == "__main__":
     print(f"Tweets:  {tweet_rows:,} rows, ~{tweet_bytes/1e9:.2f} GB -> data/raw/tweets_chunk_*.parquet")
     print(f"Reddit:  {reddit_rows:,} rows, ~{reddit_bytes/1e9:.2f} GB -> data/raw/reddit_chunk_*.parquet")
     print(f"Combined: ~{total_gb:.2f} GB")
-    print("\nRecord these exact numbers in PROGRESS_LOG.md before moving to Phase 4.")
+    print("\nRecord these exact numbers in PROGRESS_LOG.md.")

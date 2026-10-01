@@ -1,18 +1,18 @@
-# Phase 2 Setup — Environment
+# Setup — Environment
 
 ## 0. Location matters (WSL2 + Docker Desktop)
 
-Work entirely inside the WSL2 filesystem, e.g. `~/bigdata-project`, NOT
-`/mnt/c/Users/...`. Docker Desktop's WSL2 backend is dramatically slower
-and occasionally flaky when bind-mounting across the Windows/Linux
-boundary. Clone/copy this project into your WSL home directory first.
+Run everything from inside WSL2 (never PowerShell). The project folder may live on the Windows D: drive
+(`/mnt/d/ITACHI/bigdata-project`, as in this project, chosen for disk space) or in the WSL home directory
+(`~/bigdata-project`, faster I/O). On D:, Spark shuffle files are kept on WSL-native disk through `SPARK_TMP`
+(`/tmp/spark-tmp`, set in `config.py`), and the virtual environment must be created at the final location, not copied.
 
 Check you're in WSL2, not PowerShell/CMD, before running anything below:
 
     wsl
     cd ~
-    mkdir bigdata-project && cd bigdata-project
-    # copy the files here
+    git clone <repo-url> bigdata-project && cd bigdata-project   # or copy the files here
+    # when copying a folder with cp -r, check that it did not create a nested duplicate folder
 
 ## 1. Python environment
 
@@ -66,12 +66,12 @@ its transitive dependencies) from Maven Central — this can take 1-3
 minutes and needs internet access. It's cached after that. Don't panic if
 it looks stuck; check for download progress in the console output.
 
-## 6. Memory constraints (12GB host — read this before Phase 6/Spark)
+## 6. Memory constraints (12GB host — read this before running Spark)
 
 Your machine has 12GB total RAM, which is tight once WSL2 + Docker + Kafka
 + MongoDB + Spark are all running together. Three things to do:
 
-1. **Copy `wsl-config-reference/.wslconfig` to `C:\Users\<you>\.wslconfig`**
+1. **Copy `docs/wslconfig.example` to `C:\Users\<you>\.wslconfig`**
    (on the Windows side, not inside WSL), then from PowerShell:
 
        wsl --shutdown
@@ -79,24 +79,21 @@ Your machine has 12GB total RAM, which is tight once WSL2 + Docker + Kafka
    and reopen your WSL terminal before continuing. This caps WSL2 at 7GB
    so Docker can't starve Windows itself.
 
-2. **`spark_session.py` already sets conservative driver/executor memory**
-   (3g/2g) — don't remove these configs even if Spark warns they're low;
-   raising them risks OOM-killing your Spark job when Kafka+Mongo
-   containers are also running.
+2. **`spark_session.py` sets the Spark memory** (local mode, 4 cores, 7 GB driver, 64 shuffle partitions). The 7 GB driver
+   matches the WSL allowance, so Kafka and Mongo Express must be stopped during the heavy runs (see step 3). The reported timings were
+   measured with these settings; change them only if you re-run the whole experiment.
 
 3. **Stop Mongo Express while running heavy Spark jobs**, restart it after
    for inspecting results:
 
-       docker compose stop mongo-express
-       # ... run your Spark job ...
-       docker compose start mongo-express
+       docker stop kafka mongo-express
+       # ... run ingest_bulk.py / scalability_experiment.py ...
+       docker start kafka mongo-express
 
-Target combined dataset size: **~1.5GB**, not higher — see the dataset
-discussion in chat for why going bigger risks eating your time budget on
-OOM debugging rather than actual pipeline work.
+Dataset size: about 1.1 GB of Parquet (6.14 million posts). Going bigger was rejected because dataset volume carries only 5 of the
+60 marks and a larger corpus slows every debugging cycle on a 12 GB machine.
 
 ---
 
-Once `docker compose ps` shows both containers healthy and the two
-verification commands above both succeed, we're ready for Phase 3
-(dataset download) and Phase 4 (Kafka producer/consumer proof).
+Once all three containers are running and the two verification commands succeed, continue with the run order in `README.md`
+(start with `python acquire_data.py`).

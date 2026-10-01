@@ -1,9 +1,25 @@
-kafka-python-ng
+# Ingestion and storage
+kafka-python-ng==2.2.3
 pymongo==4.8.0
+
+# Distributed processing
 pyspark==3.5.1
+setuptools            # PySpark 3.5 needs distutils, removed in Python 3.12
+numpy>=1.26
+pandas==2.2.2
+pyarrow>=21.0.0       # datasets 5.x needs >=21; streamlit and pandas accept it
+
+# Analytics
 vaderSentiment==3.3.2
+
+# Dashboard
 streamlit==1.38.0
 plotly==5.24.1
-pandas==2.2.2
+
+# Report generation
+matplotlib==3.9.2
+python-docx==1.1.2
 tqdm==4.66.5
+
+# Data acquisition only (phase3_get_data.py)
 datasets==5.0.1

@@ -1,36 +1,23 @@
-"""
-Shared Spark session factory.
-
-IMPORTANT: the MongoDB Spark connector is NOT a pip package. It's pulled in
-at runtime via Maven coordinates, matched to your Spark/Scala version.
-pyspark==3.5.1 ships with Scala 2.12, so we use the connector build for
-Spark 3.5 / Scala 2.12. If you upgrade pyspark, you MUST match this string
-to the new Spark version or every Mongo read/write will fail with a
-ClassNotFoundException.
-"""
-
+"""Single Spark session factory used by every Spark phase."""
 from pyspark.sql import SparkSession
-
-MONGO_CONNECTOR_PACKAGE = "org.mongodb.spark:mongo-spark-connector_2.12:10.3.0"
-MONGO_URI = "mongodb://admin:admin123@localhost:27017/bigdata_project.posts?authSource=admin"
+import config
 
 
-def get_spark_session(app_name: str = "BigDataProject") -> SparkSession:
-    """
-    Memory settings tuned for a 12GB host machine (WSL2 capped to 7GB via
-    .wslconfig — see wsl-config-reference/.wslconfig). Driver + executor
-    together stay under that ceiling with room for Kafka/Mongo containers
-    running alongside. If you run on a machine with more RAM, these are
-    conservative floors, not a hard requirement — feel free to raise them.
-    """
-    return (
+def get_spark(app_name: str, use_mongo: bool = True, driver_mem: str = "7g", cores: int = 4):
+    b = (
         SparkSession.builder.appName(app_name)
-        .config("spark.jars.packages", MONGO_CONNECTOR_PACKAGE)
-        .config("spark.mongodb.read.connection.uri", MONGO_URI)
-        .config("spark.mongodb.write.connection.uri", MONGO_URI)
-        .config("spark.driver.memory", "3g")
-        .config("spark.executor.memory", "2g")
-        .config("spark.sql.shuffle.partitions", "8")  # default 200 is overkill and slow at this data size
-        .config("spark.sql.adaptive.enabled", "true")
-        .getOrCreate()
+        .master(f"local[{cores}]")
+        .config("spark.driver.memory", driver_mem)
+        .config("spark.driver.maxResultSize", "1g")
+        .config("spark.sql.shuffle.partitions", "64")
+        .config("spark.local.dir", config.SPARK_TMP)          # keep shuffle/spill on WSL-native disk
+        .config("spark.sql.session.timeZone", "UTC")
+        .config("spark.sql.legacy.timeParserPolicy", "CORRECTED")
+        .config("spark.sql.legacy.parquet.nanosAsLong", "true")   # pandas writes ns timestamps; Spark 3.5 cannot read them natively
+        .config("spark.ui.showConsoleProgress", "false")  # Arrow on Java 17/21
     )
+    if use_mongo and not config.OFFLINE:
+        b = b.config("spark.jars.packages", config.MONGO_SPARK_PACKAGE)
+    spark = b.getOrCreate()
+    spark.sparkContext.setLogLevel("ERROR")
+    return spark

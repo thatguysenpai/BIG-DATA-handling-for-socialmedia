@@ -1,4 +1,4 @@
-"""Phase 10: interactive dashboard.   streamlit run phase10_dashboard.py
+"""Interactive dashboard.   streamlit run dashboard.py
 
 Reads the aggregates written by phase 8 from MongoDB (agg_* collections) and
 falls back to results/*.csv if MongoDB is not reachable.
@@ -30,7 +30,7 @@ def load(name):
 
 daily, origin = load("daily_sentiment")
 if daily.empty:
-    st.error("No results found. Run phase8_analytics.py first."); st.stop()
+    st.error("No results found. Run analytics_job.py (or scalability_experiment.py) first."); st.stop()
 daily["day"] = pd.to_datetime(daily["day"])
 bysrc, _ = load("sentiment_by_source"); kwm, _ = load("keyword_monthly"); hashm, _ = load("hashtag_monthly")
 trend, _ = load("trend_terms"); conf, _ = load("validation_confusion"); vm, _ = load("validation_metrics")
@@ -79,7 +79,8 @@ with t2:
                "Lift is peak share divided by average share.")
     st.dataframe(trend, use_container_width=True, height=280)
     kwm["month"] = pd.to_datetime(kwm["month"])
-    base = mtot.assign(month=pd.to_datetime(mtot["month"])).groupby("month")["n"].sum()
+    base = (mtot[mtot.source.isin(sources)].assign(month=lambda d: pd.to_datetime(d["month"]))
+            .groupby("month")["n"].sum())
     terms = st.multiselect("Compare keywords over time", sorted(kwm["token"].unique()),
                            default=list(trend["token"].head(3)) if not trend.empty else [])
     per10k = st.checkbox("Normalise per 10,000 posts", value=True)
@@ -102,6 +103,9 @@ with t3:
     st.caption("VADER (rule-based, applied by us) compared with the dataset's own model-generated labels. "
                "These labels are not human ground truth, so agreement measures consistency between two methods.")
     if not conf.empty:
+        if conf["orig"].nunique() < 2:
+            st.warning("The dataset labels in the ingested data contain only one class (" + ", ".join(sorted(conf["orig"].unique()))
+                       + "), so accuracy and F1 against them are not meaningful. The matrix shows how VADER classified those posts.")
         m = conf.pivot(index="orig", columns="sentiment", values="count").fillna(0)
         st.plotly_chart(px.imshow(m, text_auto=True, aspect="auto", color_continuous_scale="Blues",
                                   labels=dict(x="VADER", y="Dataset label", color="Posts"),
