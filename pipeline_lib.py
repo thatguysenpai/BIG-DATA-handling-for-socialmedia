@@ -25,6 +25,7 @@ TIME_CANDS = ["created_at", "created_utc", "date", "timestamp", "time", "datetim
 ID_CANDS = ["id", "tweet_id", "comment_id", "id_str"]
 LABEL_CANDS = ["sentiment_label", "label", "sentiment"]
 SCORE_CANDS = ["sentiment_score"]
+SUBREDDIT_CANDS = ["subreddit", "subreddit_name_prefixed"]
 
 
 def pick(cols, cands):
@@ -67,13 +68,13 @@ def normalize(df, source):
                else F.concat(F.lit(source + "-"), F.monotonically_increasing_id().cast("string")))
     label_c = pick(cols, LABEL_CANDS) if source == "twitter" else None
     score_c = pick(cols, SCORE_CANDS) if source == "twitter" else None
-    sub_c = pick(cols, ["subreddit"]) if source == "reddit" else None
+    sub_c = pick(cols, SUBREDDIT_CANDS) if source == "reddit" else None
     out = df.select(
         post_id.alias("post_id"),
         F.lit(source).alias("source"),
         F.col(text_c).cast("string").alias("text"),
         _to_timestamp(df, time_c).alias("created_ts"),
-        (F.col(sub_c).cast("string") if sub_c else F.lit(None).cast("string")).alias("community"),
+        (F.regexp_replace(F.col(sub_c).cast("string"), "^r/", "") if sub_c else F.lit(None).cast("string")).alias("community"),
         (F.lower(F.col(label_c).cast("string")) if label_c else F.lit(None).cast("string")).alias("orig_sentiment"),
         (F.col(score_c).cast("double") if score_c else F.lit(None).cast("double")).alias("orig_score"),
     )
@@ -182,7 +183,9 @@ def score(df):
 
 # ------------------------------------------------------------ analytics ----
 def norm_label(c):
-    return (F.when(c.startswith("pos"), "positive").when(c.startswith("neg"), "negative")
+    """Map dataset labels to our three classes. DLT-Tweets uses bullish / bearish / neutral."""
+    return (F.when(c.startswith("pos") | c.startswith("bull"), "positive")
+             .when(c.startswith("neg") | c.startswith("bear"), "negative")
              .when(c.startswith("neu"), "neutral"))
 
 

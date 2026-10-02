@@ -24,6 +24,7 @@ def to_unified(pdf, source):
     id_c = pl.pick(cols, pl.ID_CANDS)
     lab_c = pl.pick(cols, pl.LABEL_CANDS) if source == "twitter" else None
     sc_c = pl.pick(cols, pl.SCORE_CANDS) if source == "twitter" else None
+    sub_c = pl.pick(cols, pl.SUBREDDIT_CANDS) if source == "reddit" else None
     t = pdf[time_c]
     if pd.api.types.is_numeric_dtype(t):
         m = t.astype("float64")
@@ -34,7 +35,7 @@ def to_unified(pdf, source):
     out = pd.DataFrame({
         "post_id": source + "-" + (pdf[id_c].astype(str) if id_c else pd.Series(range(len(pdf))).astype(str)),
         "source": source, "text": pdf[text_c].astype(str), "created_ts": ts,
-        "community": pdf["subreddit"].astype(str) if source == "reddit" and "subreddit" in cols else None,
+        "community": (pdf[sub_c].astype(str).str.replace(r"^r/", "", regex=True) if sub_c else None),
         "orig_sentiment": pdf[lab_c].astype(str).str.lower() if lab_c else None,
         "orig_score": pdf[sc_c].astype(float) if sc_c else None})
     return out.dropna(subset=["created_ts"])

@@ -2,8 +2,7 @@
 
 Social Media Analytics. Kafka (streaming ingestion) -> MongoDB (storage) -> PySpark (processing) -> Streamlit (dashboard).
 
-Data: English tweets (HuggingFace `ExponentialScience/DLT-Tweets`) and Reddit comments (HuggingFace `HuggingFaceGECLM/REDDIT_comments`,
-five subreddits): about 1.1 GB of Parquet, 6.14 million posts. Architecture diagram: `docs/architecture.png`.
+Data: English tweets (HuggingFace `ExponentialScience/DLT-Tweets`) and Reddit comments (HuggingFace `HuggingFaceGECLM/REDDIT_comments`, r/askscience): about 1.1 GB of Parquet, 6.14 million posts. Architecture diagram: `docs/architecture.png`.
 
 ## Repository layout
 

@@ -1,7 +1,7 @@
 source,sentiment,count
-twitter,negative,591229
-twitter,neutral,727258
+twitter,negative,591230
+twitter,neutral,727256
 reddit,negative,538051
-twitter,positive,1365822
+twitter,positive,1365823
 reddit,neutral,371576
 reddit,positive,1095735

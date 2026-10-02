@@ -22,7 +22,7 @@ def arrow(x0, y0, x1, y1, label="", rad=0.0):
         ax.text((x0 + x1) / 2, (y0 + y1) / 2 + 0.22, label, ha="center", fontsize=8, style="italic")
 
 ax.text(7.5, 6.95, "System architecture: scalable sentiment and trend analytics platform", ha="center", fontsize=14, weight="bold")
-box(0.2, 3.3, 2.3, 2.6, "1. Data sources", "HuggingFace datasets\nDLT-Tweets (English)\nREDDIT_comments\n(5 subreddits)\n~1.1 GB Parquet chunks", "#e8f1fb")
+box(0.2, 3.3, 2.3, 2.6, "1. Data sources", "HuggingFace datasets\nDLT-Tweets (English)\nREDDIT_comments\n(r/askscience)\n~1.1 GB Parquet chunks", "#e8f1fb")
 box(2.9, 4.3, 2.9, 1.9, "2a. Streaming ingestion", "Apache Kafka 3.7\n(KRaft, 1 broker)\ntopic social_media_raw", "#fdeede")
 box(2.9, 1.3, 2.9, 1.9, "2b. Bulk ingestion", "PySpark 3.5\nParquet reader\nschema normalisation", "#fdeede")
 box(6.5, 2.6, 2.4, 2.6, "3. Storage", "MongoDB 7\nposts_raw, posts_stream\nagg_* result collections\nindexes: sample_key,\nsource + created_ts", "#e6f4ea")

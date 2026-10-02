@@ -482,3 +482,17 @@ Findings, with the evidence for each:
 - [ ] Fill in the member names and dashboard screenshots in the report, update the table of contents field, check the page count (15-20).
 - [ ] Add the dataset download link to `README.md`.
 
+
+## Entry 17: Reddit sample is r/askscience only
+
+Finding. The per-subreddit chart never appeared because the Reddit parquet chunks carry no usable community field: `subreddit`
+is absent, and `subreddit_name_prefixed` and `permalink` are null. The `subreddit_id` column holds one value (t5_2qm4e) across all
+2,928,665 Reddit rows, and sampled comment bodies are r/askscience content.
+
+Cause. `acquire_data.py` streams the subreddit splits in order and stops at the size target. The target was reached inside the first
+split (askscience), so gaming, technology, todayilearned and programming were never downloaded. Entries 8 to 9 and the original
+plan list five subreddits; that plan was not what the data contains.
+
+Decision. The data is kept as is. The 6,144,625-post total, the 1.1 GB size and all results stay valid. The report, README and architecture
+diagram now state that Reddit comments come from r/askscience. Trends are computed per source, and the per-subreddit chart is omitted
+because there is only one community.

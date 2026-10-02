@@ -1,4 +1,4 @@
-"""Dataset acquisition: streams English tweets (DLT-Tweets) and Reddit comments (5 subreddits)
+"""Dataset acquisition: streams English tweets (DLT-Tweets) and Reddit comments (r/askscience, size target reached in the first split)
 from HuggingFace and writes 50,000-row Parquet chunks to data/raw/ (config.RAW_DIR).
 
     python acquire_data.py

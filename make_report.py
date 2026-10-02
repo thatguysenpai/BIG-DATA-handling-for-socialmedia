@@ -174,8 +174,7 @@ P("Both sources are public datasets hosted on HuggingFace and were streamed with
   "API-token requirements and gives one loading pattern for both platforms. The Twitter source is ExponentialScience/DLT-Tweets, "
   "a collection of about 22 million tweets. The dataset is multilingual, so rows were filtered to English while streaming. Each tweet "
   "carries a sentiment label, a sentiment score and a confidence value. The Reddit source is HuggingFaceGECLM/REDDIT_comments, "
-  "which is organised as one configuration per subreddit. Five subreddits were used: askscience, gaming, technology, todayilearned "
-  "and programming.")
+  "which is organised as one configuration per subreddit. The sample contains comments from r/askscience only, because the size target was reached before the other configurations were pulled.")
 P("The project proposal originally named Sentiment140 and a Pushshift Reddit dump. Both were replaced during the project. Live "
   "Pushshift access has been restricted since 2023, and a static Kaggle copy would have added a second download channel. Moving to "
   "two HuggingFace datasets removed that risk and produced a larger and more current corpus.")
@@ -190,7 +189,7 @@ P(f"The acquisition script wrote the data as Parquet chunks of up to 50,000 rows
   "An earlier target of 3 GB was reduced after the streaming download proved slow, since dataset volume carries 5 of the 60 marks "
   "while processing, architecture and storage carry 24.")
 P("The two sources differ in structure. Tweets carry an identifier, text, a creation time, a language code and model-generated sentiment "
-  "fields. Reddit comments carry a body, a Unix creation time, a subreddit name and a vote score, and have no sentiment fields. This "
+  "fields. Reddit comments carry a body, a Unix creation time and a vote score, and have no sentiment fields. This "
   "difference in schema is the main reason a document store was chosen and is the variety dimension of the data.")
 H("2.3 Preparation", 2)
 P("Preparation has two steps. The first, performed during ingestion, maps both sources onto one unified document with eight fields: "
@@ -208,7 +207,7 @@ P("Two limitations must be stated. First, the sentiment labels in DLT-Tweets wer
   "and differ in nature from the emoticon-based labels of Sentiment140. Agreement between our VADER output and these labels therefore "
   "measures consistency between two automatic methods and does not measure accuracy against human judgement. Second, DLT-Tweets is a "
   "topic-focused collection, so Twitter results describe that topic community and should not be read as general Twitter opinion. "
-  "The Reddit sample is limited to five subreddits for the same reason.")
+  "The Reddit sample is a single subreddit, r/askscience, so Reddit results describe that community only.")
 
 # --------------------------------------------------------------- Chapter 3 ----
 H("3. Big Data Architecture Design and Justification")
