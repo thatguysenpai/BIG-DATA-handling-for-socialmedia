@@ -68,3 +68,4 @@ Bulk ingestion of all 6.14 M documents: 115 s (53,318 docs/s). Kafka path (200,0
 - Main bottleneck: the VADER Python UDF (about 84% of the full run is load + clean + score).
 # bigdata-project-
 # bigdata-project-
+# bigdata-project-
