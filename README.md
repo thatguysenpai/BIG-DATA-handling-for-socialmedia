@@ -67,3 +67,4 @@ Bulk ingestion of all 6.14 M documents: 115 s (53,318 docs/s). Kafka path (200,0
 - Spark runs in local mode (4 cores): it measures growth on fixed resources, not cluster scale-out. Kafka has one broker: no replication.
 - Main bottleneck: the VADER Python UDF (about 84% of the full run is load + clean + score).
 # bigdata-project-
+# bigdata-project-
